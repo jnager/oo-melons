@@ -1,4 +1,5 @@
 import random
+from datetime import datetime
 
 """This file should have our order classes in it."""
 class AbstractMelonOrder(object):
@@ -9,12 +10,17 @@ class AbstractMelonOrder(object):
 
         self.species = species
         self.qty = qty
+        if self.qty > 100:
+            raise TooManyMelonsError
         self.shipped = False
         self.order_type = ""
         self.tax = None
 
     def get_base_price(self):
         base_price = random.randint(5,9)
+        now = datetime.today()
+        if (now.weekday() < 5) and (8 < now.hour < 11):
+            base_price += 4
         return base_price
 
     def get_total(self):
@@ -29,6 +35,7 @@ class AbstractMelonOrder(object):
         """Set shipped to true."""
 
         self.shipped = True
+
 
 
 
@@ -80,3 +87,13 @@ class GovernmentMelonOrder(AbstractMelonOrder):
 
     def mark_inspection(self, bool_value):
         self.passed_inspection = bool_value
+
+
+class TooManyMelonsError(ValueError):
+    """raises error for too many melons"""
+
+    def __init__(self):
+        """docstring"""
+        super(TooManyMelonsError, self).__init__("No more than 100 melons!")
+
+
